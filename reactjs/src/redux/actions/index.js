@@ -4,7 +4,7 @@ import * as constants from '../constants';
 import axios from 'axios';
 
 export const doLogin = (form) => {
-	return async (dispatch) => {
+	return (dispatch) => {
 
 		var data = {
 			email : form.email,
@@ -13,12 +13,12 @@ export const doLogin = (form) => {
 
 		var strJson = JSON.stringify(data);
 
-		await axios({
+		axios({
 			method: 'POST',
 			url : constants.API_LOGIN,
 			headers: {
 			  Accept: 'application/json',
-			  'Content-Type': 'application/json; charset=utf-8'
+			  'Content-Type': 'application/json; charset=utf-8',
 			},
 			data : strJson
 		})

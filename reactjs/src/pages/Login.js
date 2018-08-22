@@ -20,8 +20,8 @@ class Login extends Component {
         super(props);
 
         this.state = {
-            email : '',
-            password : '',
+            email : 'thai.vuong@primelabo.com.vn',
+            password : '!23456Abc',
             validation : {
                 isValid : true
             }
