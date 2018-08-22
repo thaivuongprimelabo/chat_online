@@ -4,7 +4,7 @@ import * as constants from '../constants';
 import axios from 'axios';
 
 export const doLogin = (form) => {
-	return (dispatch) => {
+	return async (dispatch) => {
 
 		var data = {
 			email : form.email,
@@ -13,27 +13,63 @@ export const doLogin = (form) => {
 
 		var strJson = JSON.stringify(data);
 
-		axios({
+		await axios({
 			method: 'POST',
 			url : constants.API_LOGIN,
 			headers: {
 			  Accept: 'application/json',
-			  'Content-Type': 'application/json',
+			  'Content-Type': 'application/json; charset=utf-8'
 			},
 			data : strJson
 		})
 		.then(res => {
 			var responseJson = res.data;
-			console.log(responseJson);
+			if(responseJson.code === 200) {
+				var userInfo = responseJson.data;
+				dispatch(updateAuthState(userInfo));
+			}
 		})
 		.catch((error) =>{
 			alert(error);
 		});
+	}
+}
 
-		axios.get(constants.API_LOGIN)
-	    .then(res => {
+export const updateAuthState = (userInfo) => {
+	return {
+		type : types.UPDATE_AUTH_STATE,
+		userInfo : userInfo
+	}
+}
+
+export const createAccount = (form) => {
+	return async (dispatch) => {
+		var data = {
+			name : form.name,
+			email : form.email,
+			password : form.password
+		};
+
+		var strJson = JSON.stringify(data);
+
+		await axios({
+			method: 'POST',
+			url : constants.API_REGISTER,
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json; charset=utf-8'
+			},
+			data : strJson
+		})
+		.then(res => {
 			var responseJson = res.data;
-			console.log(responseJson);
-	    })
+			if(responseJson.code === 200) {
+				var userInfo = responseJson.data;
+				dispatch(updateAuthState(userInfo));
+			}
+		})
+		.catch((error) =>{
+			alert(error);
+		});
 	}
 }

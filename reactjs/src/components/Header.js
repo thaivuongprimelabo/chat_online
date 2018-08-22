@@ -8,11 +8,11 @@ class Header extends Component {
     render() {
         var { auth } = this.props;
         var leftTopMenu;
-        if(auth.isLogin) {
+        if(typeof auth.userInfo.id !== 'undefined') {
             leftTopMenu = <ul className="navbar-nav my-2 my-lg-0">
                             
                             <li className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Account</a>
+                                <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{ auth.userInfo.name }</a>
                                 <div className="dropdown-menu" aria-labelledby="dropdown01" styles={{ left: '-70px !important' }}>
                                     <Link className="dropdown-item" to="/profile">Profile</Link>
                                     <Link className="dropdown-item" to="/">Logout</Link>

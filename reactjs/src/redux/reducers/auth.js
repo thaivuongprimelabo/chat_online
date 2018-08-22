@@ -1,14 +1,14 @@
 import * as types from '../actions/actionTypes';
 
 var initialState = {
-	isLogin : false
+	userInfo : []
 };
 
 var myReducer = (state = initialState, action) => {
 	switch(action.type) {
-        case types.DO_LOGIN:
-            
-			break;
+		case types.UPDATE_AUTH_STATE:
+			state.userInfo = action.userInfo;
+			return { ...state}
 		default:
 			return state;
     }

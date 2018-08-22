@@ -22,7 +22,19 @@ class FormValidator {
                 const args = rule.args || [];
                 const validation_method = typeof rule.method === 'string' ?
                                         validator[rule.method] :
-                                        rule.method
+                                        rule.method;
+
+                if(rule.method === 'checkPasswordConf') {
+                    var field_compare = state[rule.fieldCompare].toString();
+                    if(!this.checkPasswordConf(field_value, field_compare)) {
+                        validation[rule.field] = { 
+                            isInvalid: true, 
+                            message: Utils.replactErrorMessage([rule.paramMessages], rule.message )
+                        }
+                        validation.isValid = false;
+                    }
+                    return true;
+                }
                 // call the validation_method with the current field value
                 // as the first argument, any additional arguments, and the
                 // whole state as a final argument.  If the result doesn't
@@ -49,6 +61,10 @@ class FormValidator {
             validation[rule.field] = { isInvalid: false, message: '' }
         ));
         return { isValid: true, ...validation };
+    }
+
+    checkPasswordConf(password, passwordConf) {
+        return password === passwordConf;
     }
 }
 

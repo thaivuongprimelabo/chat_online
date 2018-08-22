@@ -2,7 +2,20 @@ import React, { Component } from 'react'
 import Main from '../layouts/Main';
 import { Link } from 'react-router-dom'
 
-export default class Room extends Component {
+import { connect } from 'react-redux';
+
+class Room extends Component {
+
+    componentWillMount() {
+    }
+    
+    componentDidMount() {
+        var { auth } = this.props;
+        if(typeof auth.userInfo.id === 'undefined') {
+            this.props.history.push('/');
+        }
+    }
+
     render() {
         return (
             <Main mainclass={'container'}>
@@ -56,3 +69,16 @@ export default class Room extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        auth : state.auth
+    };
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Room);

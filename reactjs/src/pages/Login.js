@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Main from '../layouts/Main';
-import Messages from '../constants/Messages';
 
+/** Validation */
+import Messages from '../constants/Messages';
 import ErrorElement from '../components/ErrorElement';
 import FormValidator from '../validation/FormValidator';
 import validator from 'validator';
 
+/** Redux */
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions/index';
 
 import LoginCss from '../assets/css/login.css'
-
 
 class Login extends Component {
 
@@ -27,36 +28,42 @@ class Login extends Component {
         }
     }
 
-    doLogin = () => {
-        this.props.doLogin(this.state);
-        // var rules = [
-        //     {
-        //         field: 'email',
-        //         paramMessages: ['Email'],
-        //         method: validator.isEmail,
-        //         validWhen: true,
-        //         message: Messages.MSG_VALID_EMAIL
-        //     },
-        //     {
-        //         field : 'password',
-        //         paramMessages : ['Password'],
-        //         method : validator.isEmpty,
-        //         validWhen : false,
-        //         message : Messages.MSG_REQUIRED
-        //     }
-        // ]
+    componentWillReceiveProps(nextProps) {
+        var { auth } = this.props;
+        if(typeof auth.userInfo.id !== 'undefined') {
+            nextProps.history.push('/room');
+        }
+    }
 
-        // var formValidator = new FormValidator(rules);
+    _doLogin = () => {
+        var rules = [
+            {
+                field: 'email',
+                paramMessages: ['Email'],
+                method: validator.isEmail,
+                validWhen: true,
+                message: Messages.MSG_VALID_EMAIL
+            },
+            {
+                field : 'password',
+                paramMessages : ['Password'],
+                method : validator.isEmpty,
+                validWhen : false,
+                message : Messages.MSG_REQUIRED
+            }
+        ]
 
-        // var validation = formValidator.validate(this.state);
+        var formValidator = new FormValidator(rules);
 
-        // if(validation.isValid) {
-        //     this.props.history.push('/room');
-        // } else {
-        //     this.setState({
-        //         validation
-        //     })
-        // }
+        var validation = formValidator.validate(this.state);
+
+        if(validation.isValid) {
+            this.props.doLogin(this.state);
+        } else {
+            this.setState({
+                validation
+            })
+        }
     }
 
     doRegister = () => {
@@ -80,12 +87,12 @@ class Login extends Component {
                         <div className="form-signin">
                             <span id="reauth-email" className="reauth-email"></span>
                             <span className="ttl">E-mail</span>
-                            <input type="email" id="inputEmail" className="form-control" placeholder="Please input email" onChange={(event) => this.setState({ email: event.target.value })} />
+                            <input type="email" id="inputEmail" className="form-control" placeholder="Please input email" value={ this.state.email } onChange={(event) => this.setState({ email: event.target.value })} />
                             { errEmail }
                             <span className="ttl">Password</span>
-                            <input type="password" id="inputPassword" className="form-control" placeholder="Please input password" onChange={(event) => this.setState({ password: event.target.value })} />
+                            <input type="password" id="inputPassword" className="form-control" placeholder="Please input password" value={ this.state.password }  onChange={(event) => this.setState({ password: event.target.value })} />
                             { errPassword }
-                            <button className="btn btn-lg btn-primary btn-block btn-signin" type="submit" onClick={ this.doLogin }>Login</button>
+                            <button className="btn btn-lg btn-primary btn-block btn-signin" type="submit" onClick={ this._doLogin }>Login</button>
                         </div>
                     </div>
                 </div>
@@ -98,7 +105,9 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        auth : state.auth
+    };
 }
 
 const mapDispatchToProps = (dispatch, props) => {
