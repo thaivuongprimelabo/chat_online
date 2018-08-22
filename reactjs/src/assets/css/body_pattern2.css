@@ -1,0 +1,16 @@
+/*ページ全体*/
+body{
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: .9rem;
+  font-feature-settings: "palt";
+  background: -webkit-gradient(linear,top,bottom,from(#fffdfa),to(#c7c2b7));
+  background: -webkit-linear-gradient(top,#fffdfa,#c7c2b7);
+  background: linear-gradient(to bottom,#fffdfa,#c7c2b7);
+}
+a{
+  color: #a50532;
+}
+a:hover{
+  color: #a50532;
+}

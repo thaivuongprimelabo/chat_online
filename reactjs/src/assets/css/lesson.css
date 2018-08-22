@@ -1,0 +1,472 @@
+/*画面分割*/
+html,body {
+  height:100%;
+}
+.wrapper{
+  overflow: hidden;
+}
+#iframeblock{
+  /*height: 100%;
+  overflow: hidden;*/
+}
+.iframebody{
+  /*height: 100%;*/
+}
+iframe.lesson{
+  border: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+.lesson_screen_box{
+  /*border: 2px solid green;*/
+  width: 33%;
+  height: 100%;
+  /* overflow: scroll; */
+  /*resize: horizontal;*/
+}
+.lesson_screen_box:first-child{
+  /*padding-left: 15px;*/
+}
+.padLeft {
+    padding-left: 15px !important;
+}
+.padRight {
+    padding-right: 15px !important;
+}
+.lesson_screen_box_fullscreen{
+  width: 100%;
+  height: 100%;
+  /*overflow: scroll;
+  resize: horizontal;*/
+}
+.lesson_screen_box_2split{
+  width: 50%;
+  height: 100%;
+  /*overflow: scroll;
+  resize: horizontal;*/
+}
+.lesson_screen_none {
+    opacity: 0;
+    width: 0;
+}
+/*editor*/
+/*navigation*/
+.nav_editor_bottom{
+  background: #404040;
+  width: 100%;
+  height: 50px;
+  /*position: absolute;*/
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  position: fixed;
+}
+/*folder表示*/
+.nav_editor_bottom_folder{
+  background: #404040;
+  width: 100%;
+  height: 50px;
+  bottom: 0;
+  right: 0;
+  z-index: 1000;
+  /* position: fixed; */
+  position: absolute;
+  /* left: 0; */
+}
+/*nav_editor_head*/
+.nav_editor_head{
+  background: #404040;
+  width: 100%;
+  height: 35px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+.nav_editor_head>li{
+  display: inline-block;
+}
+.nav_editor_head>li>a {
+  color: #a5a5a5;
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: bold;
+  height: 35px;
+  line-height: 1;
+  padding: .7rem;
+  background: #101010;
+}
+.nav_editor_head li a {
+  position: relative;
+  text-decoration: none;
+}
+.nav_editor_head li a:hover{
+  opacity: 0.5;
+}
+li.icon_folder{
+  background: #404040;
+  /*padding: .3rem .6rem;*/
+}
+/*folder表示*/
+.nav_editor_head_folder{
+  background: #404040;
+  width: 100%;
+  height: 35px;
+  /* position: fixed; */
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  /* left: 0; */
+}
+.nav_editor_head_folder>li{
+  display: inline-block;
+}
+.nav_editor_head_folder>li>a {
+  color: #a5a5a5;
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: bold;
+  height: 35px;
+  line-height: 1;
+  padding: .7rem;
+  background: #101010;
+}
+.nav_editor_head_folder li a {
+  position: relative;
+  text-decoration: none;
+}
+.nav_editor_head_folder li a:hover{
+  opacity: 0.5;
+}
+/*nav_editor_bottom*/
+li.icon_clear a{
+  background: #404040 !important;
+  height: 50px;
+  width: 50px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+li.btn_run a{
+  color:#fff;
+  background: #60c061 !important;
+  height: 50px;
+  width: 70px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+li.icon_clear a:hover,
+li.btn_run a:hover{
+  color:#fff;
+  text-decoration: none;
+  opacity: 0.5;
+}
+/*エディタ画面*/
+#editor{
+  height: 100%;
+  overflow: auto;
+  margin-top: 35px;
+}
+/*folder表示*/
+#editor_folder{
+  height: 100%;
+  /* overflow: auto; */
+  margin-top: 35px;
+  /* width: 70%; */
+  /* float: right; */
+}
+#folder_view,
+#editor_view {
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -ms-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  transition: all .5s ease;
+}
+#folder_view{
+  width: 45%;
+  float: left;
+  background: #fff;
+  height: 100%;
+  overflow-x: hidden;
+  word-wrap: initial;
+}
+#editor_view {
+  width: 100%;
+  height: 100%;
+  right: 0;
+  top: 0;
+  position: absolute;
+  z-index: 1;
+}
+/*拡大 - 暗色*/
+.btn_enlargement_dark{
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  width: 35px;
+  height: 35px;
+  background: #404040;
+  z-index: 1000;
+}
+.btn_enlargement_dark:hover{
+  opacity: 0.5;
+}
+.btn_enlargement_dark img{
+  padding: .6rem;
+}
+/*拡大 - 明色*/
+.btn_enlargement_light{
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  display: block;
+  width: 35px;
+  height: 35px;
+  background: #e9e9e9;
+}
+.btn_enlargement_light:hover{
+  opacity: 0.5;
+}
+.btn_enlargement_light img{
+  padding: .6rem;
+}
+/*simulation*/
+#simulator{
+  height: 38em;
+  overflow: auto;
+  background: #fff;
+}
+.nav_simulation_head{
+  background: #e9e9e9;
+  width: 100%;
+  height: 35px;
+}
+.nav_simulation_head>input{
+  color: #333;
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: bold;
+  width: 70%;
+  height: 25px;
+  line-height: 1;
+  padding: .3rem;
+  margin: .3rem .3rem .3rem 70px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: .3rem;
+}
+.nav_simulation_head>input::placeholder {
+  color: #333;
+}
+/*戻る*/
+.btn_back{
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 35px;
+  height: 35px;
+  background: #e9e9e9;
+}
+.btn_back:hover{
+  opacity: 0.5;
+}
+.btn_back img{
+  padding: .6rem;
+}
+/*リロード*/
+.btn_reload{
+  position: absolute;
+  top: 0;
+  left: 35px;
+  display: block;
+  width: 35px;
+  height: 35px;
+  background: #e9e9e9;
+}
+.btn_reload:hover{
+  opacity: 0.5;
+}
+.btn_reload img{
+  padding: .6rem;
+}
+/*教科書画面*/
+.lessontext_nav{
+  font-size: .8rem;
+  padding: .5rem;
+  /*----tvh add---*/
+  width: 100%;
+}
+.lessontext_title{
+  font-size: .8rem;
+}
+.lessontext_title::after{
+  content: '▶';
+  font-size: .5rem;
+}
+a.contents_list{
+  color: #000;
+}
+.contents_select_message{
+  text-align: center;
+  padding: 15px;
+    margin-top: 15px;
+  background: #efefef;
+  border: 2px solid #ccc;
+  display: block;
+}
+/**/
+.lessontext_bottom_navigation{
+  background: #ddd;
+  width: 100%;
+  height: 50px;
+  bottom: 0;
+  left: 15px;
+  z-index: 1000;
+  position: absolute;
+}
+.lessontext_bottom_navigation .back{
+  color: #000;
+  display: inline-block;
+  float: left;
+  padding: 15px 15px 15px 15px;
+}
+.lessontext_bottom_navigation .back::before{
+  content: url(../img/back.png);
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 2px;
+  margin-right: 5px;
+}
+.lessontext_bottom_navigation .next{
+  color: #000;
+  display: inline-block;
+  float: right;
+  padding: 15px 30px 15px 15px;
+}
+.lessontext_bottom_navigation .next::after{
+  content: url(../img/next.png);
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 2px;
+  margin-left: 5px;
+}
+/*フォルダ画面*/
+.folder_wrap{
+  padding-top: 15px;
+  padding-left: 15px;
+}
+.folder_close{
+  background: url(../img/folder_close.png);
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  display: block;
+}
+.folder_close a{
+  color: #000;
+}
+.folder_open{
+  background: url(../img/folder_open.png);
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  display: block;
+}
+.folder_open a{
+  color: #000;
+}
+.file{
+  background: url(../img/file.png);
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  margin-left: 20px;
+  display: block;
+}
+/*------Tran Vu Hao-start-----*/
+#accordion {
+  width: 100%;
+  min-height: 100%;
+  padding: 0 0 60px;
+  background: #fff;
+  position: absolute;
+  top: 39px;
+  left: -200%;
+  z-index: 1;
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -ms-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+#accordion.open {
+  left: 0;
+}
+#accordion .active {
+    color: #007bff;
+}
+.card {
+  padding-left: 15px;
+}
+.wrap_editor {
+  height: 100%;
+  overflow: hidden;
+}
+.document_list {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  z-index: 999;
+}
+.lesson.edge {
+  position: relative;
+  overflow: hidden;
+}
+.container.edge {
+  max-width: 540px;
+}
+.container .wrap {
+    position: relative;
+    padding: 40px 0 60px;
+}
+.inner_text {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+}
+#content_text {
+  padding: 10px 10px 0 30px;
+  position: absolute;
+  left: 0;
+  top: 39px;
+}
+.container-full {
+  max-width: 100% !important;
+}
+#resizable {
+  margin: 0;
+}
+#resizable .col_resize {
+  position: relative;
+}
+#resizable iframe {
+  pointer-events: none;
+}
+#resizable .mouse_move {
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  z-index: 999;
+}
+#resizable .mouse_move {
+  cursor: col-resize;
+}
+/*------Tran Vu Hao-end-----*/

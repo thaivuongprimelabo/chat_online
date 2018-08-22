@@ -1,0 +1,165 @@
+/*index画面*/
+.carousel-item img{
+  width:100%;
+}
+.card{
+  border: none;
+}
+.course_introduction{
+  margin-bottom: 1.5rem;
+}
+.course_introduction_card_border{
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: .25rem;
+}
+.people_comment{
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.people_comment{
+}
+/*ヘルプ画面*/
+/*
+#help h3{
+  margin-bottom: 1rem;
+  padding-bottom: .5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #000;
+  border-bottom: 1px solid rgba(0,0,0,.125);
+}
+*/
+ul#help_topic_path {
+  padding: 0;
+}
+#help_topic_path a{
+  color: #000;
+  font-size: .9rem;
+  text-decoration: underline;
+}
+#help_topic_path a:hover{
+  color: #a50532;
+}
+#help_topic_path li{
+  display: inline-block;
+  font-size: ;
+  color: ;
+}
+#help_topic_path li + li:before {
+    content: "\003e";
+    padding: 0 10px;
+    display: inline;
+}
+#help ul{
+  list-style-type: none;
+  padding: .5rem 0 0 .5rem;
+}
+#help li{
+  position: relative;
+  padding-left: 1.4rem;
+  padding-bottom: 1rem;
+}
+#help li::before{
+  content: "・";
+  position: absolute;
+  left: 0px;
+}
+#help ul li a{
+  color: #9E9E98;
+}
+#faq_wrap{
+  border: 1px solid #d5c9b9;
+  padding: .8rem .5rem 0 .5rem;
+  margin-bottom: 15px;
+}
+#faq_wrap .faq_title{
+  font-size: 1rem;
+  font-weight: bold;
+  padding-left: .5rem;
+}
+#faq_wrap ul {
+  margin-top: .5rem;
+  margin-bottom: 0;
+}
+.faq_title_2{
+  width: 100%;
+  font-size: 1rem;
+  border-bottom: 1px solid #e7ddd1;
+  font-weight: bold;
+  padding: .5rem 0 .3rem 1rem;
+}
+/*ヘルプ-Q&A画面*/
+#help_ans h3{
+  position: relative;
+  padding: 5px 0px 5px 70px;
+  margin: 10px 0 25px 0;
+  text-align: left;
+  line-height: 1.3;
+  border-bottom: dotted 1px #ccc;
+}
+#help_ans h3::after{
+  content: "Q";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  margin-top: -25px;
+  height: 50px;
+  width: 50px;
+  font-size: 2rem;
+  text-align: center;
+  color: #fff;
+  background: -webkit-linear-gradient(top,#313982,#1f2453);
+  background: linear-gradient(to bottom,#313982,#1f2453);
+  text-shadow: 1px 1px 2px #000;
+  border: 1px solid #1f2453;
+}
+#help_ans .ans{
+  position: relative;
+  padding: 0 0 0 70px;
+  margin: 10px 0 25px 0;
+  text-align: left;
+  line-height: 1.6;
+}
+#help_ans .ans::after{
+  content: "A";
+  display: block;
+  position: absolute;
+  top: 25px;
+  left: 0;
+  margin-top: -25px;
+  height: 50px;
+  width: 50px;
+  font-size: 2rem;
+  text-align: center;
+  color: #fff;
+  background: -webkit-linear-gradient(top,#b61a46,#831534);
+  background: linear-gradient(to bottom,#b61a46,#831534);
+  text-shadow: 1px 1px 2px #333;
+  border: 1px solid #a96d05;
+}
+/*-------------Tran Vu Hao--start----------*/
+.transition {
+  -webkit-transition: all .4s ease-in-out;
+  -moz-transition: all .4s ease-in-out;
+  -ms-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+.loading {
+  text-align: center;
+  padding: 20px 0;
+  background: none;
+  display: none;
+}
+.animate {
+  margin-left: -20px;
+  opacity: 0;
+  height: 0;
+}
+.animate.animated {
+  margin-left: 0;
+  opacity: 1;
+  height: 100%;
+}
+/*-------------Tran Vu Hao--end----------*/

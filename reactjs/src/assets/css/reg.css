@@ -1,0 +1,68 @@
+#profile h1 {
+    min-height: 50px;
+    padding: 13px 75px;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+select {
+    -webkit-appearance: menulist;
+    -moz-appearance: menulist;
+    appearance: menulist;
+    padding: 0;
+    margin: 0;
+    height: 1.5rem;
+    background: transparent;
+    position: relative;
+    z-index: 1;
+    padding: 0 1.5rem 0 .25rem;
+    border: 1px solid #333;
+    font-size: .75rem;
+}
+
+aside {
+    font-size: 12px;
+}
+.w-48 {
+    width: 48% !important;
+}
+
+#profile .btn-sm {
+    vertical-align: baseline;
+}
+
+.menuitem {
+    opacity: 0.1;
+    background-color: #04a9f4;
+    cursor: default;
+    margin: 10px 0;
+}
+
+.show01 {
+    opacity: 1;
+    background-color: #004794;
+    color: #fff !important;
+    cursor: default;
+}
+
+#profile .profile_item input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(2); /* IE */
+  -moz-transform: scale(2); /* FF */
+  -webkit-transform: scale(2); /* Safari and Chrome */
+  -o-transform: scale(2); /* Opera */
+  padding: 10px;
+  width: 3% !important;
+}
+
+/* Portrait and Landscape */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    #profile .btn-sm {
+        font-size: 12px;
+    }
+}
