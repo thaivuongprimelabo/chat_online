@@ -16,12 +16,12 @@ use App\Rooms;
 class ApiController extends Controller
 {
     
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware(function ($request, $next) {
             
             // Check content-type
-            if ($_SERVER["CONTENT_TYPE"] !== 'application/json; charset=utf-8') {
+            $contentType = strtolower($_SERVER["CONTENT_TYPE"]);
+            if ($contentType != 'application/json; charset=utf-8') {
                 $result["code"] = ResultCode::CONTENT_TYPE_ERR;
                 $result["data"] = [];
                 return response()->json($result);
@@ -29,7 +29,8 @@ class ApiController extends Controller
             
             return $next($request);
         });
-    }
+    }        
+    
     
     /**
      * login
