@@ -1128,3 +1128,13 @@ Author: Tran Vu Hao;
 .client {
   background: #BAE2F9;
 }
+
+.fade-enter {
+  opacity: 0;
+  z-index: 1;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 250ms ease-in;
+}

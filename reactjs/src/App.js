@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { HashRouter as Router, Route } from 'react-router-dom'
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import Login from './pages/Login'
 import Room from './pages/Room'
 import Register from './pages/Register'
@@ -9,11 +10,11 @@ export default class App extends Component {
     render() {
         return (
             <Router>
-                <div>
+                <Switch>
                     <Route exact path="/" component={Login} />
                     <Route path="/room" component={Room} />
                     <Route path="/register" component={Register} />
-                </div>
+                </Switch>
             </Router>
         )
     }

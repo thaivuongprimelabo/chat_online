@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Header from '../components/Header'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.css';
 import BodyPatternCss from '../assets/css/body_pattern1.css'
 import StyleCss from '../assets/css/style.css'
 

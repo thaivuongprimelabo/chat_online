@@ -1,5 +1,4 @@
 import * as types from '../actions/actionTypes';
-import { stat } from 'fs';
 
 var initialState = {
 	isLogin : false
