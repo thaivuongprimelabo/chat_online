@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Constants\ResultCode;
 use App\Messages;
 use App\Rooms;
+use DB;
 
 class ApiController extends Controller
 {
@@ -124,6 +125,10 @@ class ApiController extends Controller
            'friend_id' => $data['friend_id'],
            'content' => $data['content']
         ]);
+
+        $message = Messages::select('messages.*','users.name')->where('messages.id',$message['id'])
+                            ->leftJoin('users','users.id','=','messages.user_id')
+                            ->first();
         
         if($message) {
             $result['code'] = ResultCode::SUCCESS;
@@ -154,6 +159,43 @@ class ApiController extends Controller
             
         }
         
+        return response()->json();
+    }
+
+    /**
+     * getMessage
+     */
+    public function getMessageList(Request $request) {
+        $data = $request->all();
+        $wheres = [];
+        $orWheres = [];
+        if(isset($data['user_id'])) {
+            $wheres[] = ['user_id', '=', $data['user_id']];
+            $orWheres[] = ['user_id', '=', $data['friend_id']];
+        }
+
+        if(isset($data['friend_id'])) {
+            $wheres[] = ['friend_id', '=', $data['friend_id']];
+            $orWheres[] = ['friend_id', '=', $data['user_id']];
+        }
+
+        // if(isset($data['room_id'])) {
+        //     $wheres[] = ['room_id', '=', $data['room_id']];
+        // }
+        $messages = Messages::select('messages.*',DB::raw('CASE WHEN user_id = ' . $data['user_id'] . ' THEN 1 ELSE 0 END AS type'),'users.name')
+                            ->leftJoin('users','users.id','=','messages.user_id')
+                            ->where($wheres)
+                            ->orWhere($orWheres)
+                            ->get();
+
+        if($messages) {
+
+            $result['code'] = ResultCode::SUCCESS;
+            $result['data'] = $messages;
+            return response()->json($result);
+
+        }
+
         return response()->json();
     }
     

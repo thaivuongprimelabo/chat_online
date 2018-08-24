@@ -7,7 +7,6 @@ var initialState = {
 var myReducer = (state = initialState, action) => {
 	switch(action.type) {
         case types.CREATE_ACCOUNT:
-            console.log(action);
 			return state;
 		default:
 			return state;

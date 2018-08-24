@@ -82,12 +82,46 @@ export const addMessage = (message) => {
 			friend_id : message.friend_id,
 			content : message.content
 		};
-
 		var strJson = JSON.stringify(data);
 
 		await axios({
 			method: 'POST',
 			url : constants.API_ADD_MESSAGE,
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json; charset=utf-8'
+			},	
+			data : strJson
+		})
+		.then(res => {
+			var responseJson = res.data;
+			if(responseJson.code === 200) {
+				var message = responseJson.data;
+				dispatch(addMessageToList(message, constants.ADD_ONE_MESSAGE));
+			}
+		})
+		.catch((error) =>{
+			alert(error);
+		});
+	}
+}
+
+export const getMessageList = (input) => {
+	return async (dispatch) => {
+
+		dispatch(updateLoadingStatus(true));
+
+		var data = {
+			user_id : input.user_id,
+			room_id : input.room_id,
+			friend_id : input.friend_id
+		};
+
+		var strJson = JSON.stringify(data);
+
+		await axios({
+			method: 'POST',
+			url : constants.API_GET_MESSAGE_LIST,
 			headers: {
 			  Accept: 'application/json',
 			  'Content-Type': 'application/json; charset=utf-8'
@@ -97,8 +131,9 @@ export const addMessage = (message) => {
 		.then(res => {
 			var responseJson = res.data;
 			if(responseJson.code === 200) {
-				var message = responseJson.data;
-				dispatch(addMessageToList(message));
+				var messages = responseJson.data;
+				dispatch(addMessageToList(messages, constants.ADD_LIST_MESSAGE));
+				dispatch(updateLoadingStatus(false));
 			}
 		})
 		.catch((error) =>{
@@ -107,9 +142,17 @@ export const addMessage = (message) => {
 	}
 }
 
-export const addMessageToList = (message) => {
+export const updateLoadingStatus = (status) => {
+	return {
+		type : types.UPDATE_LOADING_STATUS,
+		status : status
+	}
+}
+
+export const addMessageToList = (message, mode) => {
 	return {
 		type : types.ADD_MESSAGE_TO_LIST,
-		message : message
+		message : message,
+		mode : mode
 	}
 }

@@ -18,3 +18,4 @@ Route::post('/register', 'Api\ApiController@register')->name('register');
 Route::post('/resetPassword', 'Api\ApiController@resetPassword')->name('resetPassword');
 Route::post('/add-message', 'Api\ApiController@addMessage')->name('addMessage');
 Route::post('/create-room', 'Api\ApiController@createRoom')->name('createRoom');
+Route::post('/get-message-list', 'Api\ApiController@getMessageList')->name('getMessageList');

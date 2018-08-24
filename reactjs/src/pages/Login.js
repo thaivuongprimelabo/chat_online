@@ -6,6 +6,7 @@ import Main from '../layouts/Main';
 import Messages from '../constants/Messages';
 import ErrorElement from '../components/ErrorElement';
 import FormValidator from '../validation/FormValidator';
+import Loading from '../components/Loading';
 import validator from 'validator';
 
 /** Redux */
@@ -81,7 +82,7 @@ class Login extends Component {
         var { validation, loading } = this.state;
 
         if(loading) {
-            spinner = <i className="fa fa-spinner fa-spin" aria-hidden="true" style={{position:'absolute', right: '10px', top: '10px'}}></i>;
+            spinner = <Loading />;
         }
 
         if(!validation.isValid) {
