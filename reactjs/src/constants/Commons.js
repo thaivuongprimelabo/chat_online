@@ -12,3 +12,5 @@ export const IS_FRIEND = 0;
 
 export const ADD_LIST_MESSAGE = 1;
 export const ADD_ONE_MESSAGE = 0;
+
+export const SOCKET_HOST = 'http://127.0.0.1:3001';

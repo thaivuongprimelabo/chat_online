@@ -8,6 +8,11 @@ import Loading from '../components/Loading';
 
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions/index';
+import * as constants from '../constants/Commons';
+
+import socketIOClient from 'socket.io-client';
+
+
 
 class Room extends Component {
 
@@ -23,8 +28,17 @@ class Room extends Component {
     }
     
     componentDidMount() {
-        var { auth } = this.props;
-        if(typeof auth.userInfo.id === 'undefined') {
+        this._redirectToLogin(this.props);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this._redirectToLogin(nextProps);
+    }
+
+    _redirectToLogin = (props) => {
+        var { auth } = props;
+        console.log(auth.userInfo);
+        if(auth.userInfo === null) {
             this.props.history.push('/');
         }
     }
@@ -37,7 +51,9 @@ class Room extends Component {
             friend_id : this.state.friend_id,
             content : this.state.content
         }
-        this.props.addMessage(message);
+
+        const socket = socketIOClient(constants.SOCKET_HOST);
+        socket.emit('add-message', message);
     }
 
     _setFriendId = (friend_id) => {
@@ -47,6 +63,7 @@ class Room extends Component {
     }
 
     render() {
+
         var { messages, userOnline, showLoading } = this.props;
         var messagesList;
         var spinner;

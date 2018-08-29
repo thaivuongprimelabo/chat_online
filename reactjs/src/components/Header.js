@@ -5,17 +5,23 @@ import { connect } from 'react-redux';
 import * as Actions from '../redux/actions/index';
 
 class Header extends Component {
+
+    _doLogout = () => {
+        var { auth } = this.props;
+        this.props.doLogout(auth.userInfo);
+    }
+
     render() {
         var { auth } = this.props;
         var leftTopMenu;
-        if(typeof auth.userInfo.id !== 'undefined') {
+        if(auth.userInfo !== null) {
             leftTopMenu = <ul className="navbar-nav my-2 my-lg-0">
                             
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{ auth.userInfo.name }</a>
                                 <div className="dropdown-menu" aria-labelledby="dropdown01" styles={{ left: '-70px !important' }}>
                                     <Link className="dropdown-item" to="/profile">Profile</Link>
-                                    <Link className="dropdown-item" to="/">Logout</Link>
+                                    <a className="dropdown-item" href="javascript:void(0)" onClick={ this._doLogout } >Logout</a>
                                 </div>
                             </li>
                         </ul>
@@ -57,7 +63,11 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch, props) => {
-    return {};
+    return {
+        doLogout : (userInfo) => {
+            dispatch(Actions.doLogout(userInfo));
+        }
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

@@ -7,7 +7,9 @@ module.exports = {
     output : {
         //path : path.join(__dirname, '../public/dist/react'),
         path : path.join(__dirname, 'dist'),
-        filename : 'bundle.js'
+        filename : 'bundle.js',
+        //publicPath : '/dist/'
+        //publicPath : '/dist/react/'
     },
     module : {
         rules : [
@@ -28,7 +30,7 @@ module.exports = {
     },
     plugins : [
         new HtmlWebpackPlugin({
-            template : 'src/index.html'
+            template : './src/index.html'
         }),
         new webpack.ProvidePlugin({
             '$' : 'jquery',

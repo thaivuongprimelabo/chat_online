@@ -2,6 +2,9 @@ import * as types from './actionTypes';
 import * as constants from '../../constants/Commons';
 
 import axios from 'axios';
+import socketIOClient from 'socket.io-client';
+
+const socket = socketIOClient(constants.SOCKET_HOST);
 
 export const doLogin = (form) => {
 	return (dispatch) => {
@@ -26,12 +29,23 @@ export const doLogin = (form) => {
 			var responseJson = res.data;
 			if(responseJson.code === 200) {
 				var userInfo = responseJson.data;
+				socket.emit('join', userInfo);
 				dispatch(updateAuthState(userInfo));
+			} else {
+				alert('Email or password not valid');
 			}
 		})
 		.catch((error) =>{
 			alert(error);
 		});
+	}
+}
+
+export const doLogout = (userInfo) => {
+	return (dispatch) => {
+		socket.emit('leave', userInfo);
+		dispatch(updateAuthState(null));
+		
 	}
 }
 
@@ -154,5 +168,12 @@ export const addMessageToList = (message, mode) => {
 		type : types.ADD_MESSAGE_TO_LIST,
 		message : message,
 		mode : mode
+	}
+}
+
+export const addUserOnlineToList = (users) => {
+	return {
+		type : types.ADD_USER_ONLINE_TO_LIST,
+		users : users
 	}
 }

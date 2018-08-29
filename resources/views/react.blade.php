@@ -66,6 +66,7 @@
     </head>
     <body>
         <div id="root"></div>
-        <script src="{{ URL::to('/dist/react/bundle.js') }}"></script>
+        <script src="{{ URL::to('dist/react/bundle.js') }}"></script>
     </body>
+    
 </html>

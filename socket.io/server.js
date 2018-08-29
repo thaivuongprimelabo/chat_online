@@ -1,46 +1,55 @@
 /*
 var fs = require('fs');
 */
-var path = '../reactjs/node_modules';
+var path = '../node_modules';
 var app = require(path + '/express')();
-var request = require(path + '/request');
-var https = require('http');
+var http = require('http');
 var port = 3001;
 
-var server = require('http').createServer(app);
-var tutor_socket_ids = {};
-var online_tutors = {};
-/*
-server.listen(port || 3001,"0.0.0.0", function(){
-  console.log('\033[96mlistening on localhost:3001 \033[39m');
-});
-*/
-/*
-TODO: session timeout not have solution for realtime emit
-*/
-server.listen(port, "0.0.0.0", function () {
-    console.log('Server listening on host:' + port);
+var server = http.createServer(app);
+
+app.get('/', function(req, res){
+    res.sendFile(__dirname + '/index.html');
 });
 
-var io = require(path + '/socket.io')(server);
-io.online_tutors = online_tutors;
+server.listen(port, function(){ 
+    console.log('listening on *:' + port);
+});
+
+var io = require('socket.io')(server);
+
+var global_users = [];
+
 io.sockets.on('connection', function (socket) {
-    //console.log('|- server.js: connection');
-    // console.log(socket);
-    socket.on('join', function (data) {
-        socket.global_online_id = data;
-        socket.join(data);
+
+    socket.on('join', function(data) {
+
+        global_users.push(data);
+        
+        socket.broadcast.emit('add_user_online', global_users);
     });
 
-    socket.on('disconnect', function () {
-        //console.log('|- server.js: disconnect');
-        var socket_id = socket.id;
-        if(offline(socket_id, online_tutors, tutor_socket_ids)==true){
-            socket.broadcast.emit('update_online_tutors', online_tutors);
+    socket.on('leave', function(data) {
+        var length = global_users.length;
+        if(length > 0) {
+            for(var i = 0; i < length; i++) {
+                var item = global_users[i];
+                if(item.id === data.id) {
+                    global_users.splice(i, 1);
+                    break;
+                }
+            }
         }
+
+        socket.broadcast.emit('add_user_online', global_users);
     });
 
-    socket.on('reconnect', function () {
-        //console.log('|- server.js: reconnect');
+    socket.on('disconnect', function(){
+        //console.log('user disconnected');
+    });
+
+    socket.on('add-message', function(msg){
+        console.log(msg);
+        socket.broadcast.emit('add_message_to_list', msg);
     });
 });

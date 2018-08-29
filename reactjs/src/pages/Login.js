@@ -32,7 +32,7 @@ class Login extends Component {
 
     componentWillReceiveProps(nextProps) {
         var { auth } = this.props;
-        if(typeof auth.userInfo.id !== 'undefined') {
+        if(auth.userInfo !== null) {
             nextProps.history.push('/room');
         }
     }

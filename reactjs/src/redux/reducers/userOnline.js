@@ -1,13 +1,15 @@
 import * as types from '../actions/actionTypes';
 import * as constants from '../../constants/Commons'
 
-var initialState = [
-    {id: 2, name: "Le Giang", status: constants.ONLINE},
-    {id: 3, name: "Hoang Le", status: constants.ONLINE}
-];
+var initialState = [];
 
 var myReducer = (state = initialState, action) => {
 	switch(action.type) {
+        case types.ADD_USER_ONLINE_TO_LIST:
+            state = [];
+            state = action.users;
+            localStorage.setItem('user_online_list', JSON.stringify(action.users));
+            return [...state];
 		default:
 			return state;
     }
