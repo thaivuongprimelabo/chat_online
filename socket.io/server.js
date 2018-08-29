@@ -19,14 +19,50 @@ server.listen(port, function(){
 var io = require('socket.io')(server);
 
 var global_users = [];
-
+var roomno = 0;
 io.sockets.on('connection', function (socket) {
+    roomno++;
+    socket.join('room-'+ roomno);
 
     socket.on('join', function(data) {
+        var exists = false;
+        var length = global_users.length;
+        if(length > 0) {
+            for(var i = 0; i < length; i++) {
+                var item = global_users[i];
+                if(item.id === data.id) {
+                    exists = true;
+                    break;
+                }
+            }
+        }
 
-        global_users.push(data);
+        if(!exists) {
+            global_users.push(data);
+        }
+
+        io.sockets.in('room-'+ roomno).emit('is_exists', exists);
         
-        socket.broadcast.emit('add_user_online', global_users);
+    });
+
+    socket.on('get-user-online-list', function(data) {
+        socket.broadcast.emit('set-user-online-list', global_users);
+    });
+    
+    socket.on('check_exists', function(data) {
+        var exists = false;
+        var length = global_users.length;
+        if(length > 0) {
+            for(var i = 0; i < length; i++) {
+                var item = global_users[i];
+                if(item.id === data.id) {
+                    exists = true;
+                    break;
+                }
+            }
+        }
+
+        socket.broadcast.emit('is_exists', exists);
     });
 
     socket.on('leave', function(data) {
@@ -41,7 +77,7 @@ io.sockets.on('connection', function (socket) {
             }
         }
 
-        socket.broadcast.emit('add_user_online', global_users);
+        socket.broadcast.emit('set-user-online-list', global_users);
     });
 
     socket.on('disconnect', function(){

@@ -7,8 +7,10 @@ var myReducer = (state = initialState, action) => {
 	switch(action.type) {
         case types.ADD_USER_ONLINE_TO_LIST:
             state = [];
-            state = action.users;
-            localStorage.setItem('user_online_list', JSON.stringify(action.users));
+            // if(action.users !== null) {
+                state = action.users;
+            // }s
+            //localStorage.setItem('user_online_list', JSON.stringify(action.users));
             return [...state];
 		default:
 			return state;

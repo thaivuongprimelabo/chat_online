@@ -12,8 +12,10 @@ import validator from 'validator';
 /** Redux */
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions/index';
-
+import * as constants from '../constants/Commons';
 import LoginCss from '../assets/css/login.css'
+
+import socketIOClient from 'socket.io-client';
 
 class Login extends Component {
 
@@ -26,20 +28,25 @@ class Login extends Component {
             validation : {
                 isValid : true
             },
-            loading: false
+            loading: false,
+            check : false
         }
+    }
+
+    componentDidMount() {
     }
 
     componentWillReceiveProps(nextProps) {
-        var { auth } = this.props;
-        if(auth.userInfo !== null) {
-            nextProps.history.push('/room');
-        }
+        // var { auth } = this.props;
+        // if(auth.userInfo !== null) {
+        //     socket.emit('join', auth.userInfo);
+        //     //nextProps.history.push('/room');
+        // }
     }
 
     _doLogin = () => {
-
-        this.setState({loading: true});
+        
+        this.setState({loading: true, check: false});
 
         var rules = [
             {
@@ -64,6 +71,8 @@ class Login extends Component {
 
         if(validation.isValid) {
             this.props.doLogin(this.state);
+            //this._checkExists();
+            //socket.emit('check_exists', {email : this.state.email})
         } else {
             this.setState({
                 validation
@@ -71,11 +80,33 @@ class Login extends Component {
         }
     }
 
+    _checkExists = () => {
+        const socket = socketIOClient(constants.SOCKET_HOST);
+        socket.emit('join', {email : this.state.email});
+    }
+
     doRegister = () => {
         this.props.history.push('/register');
     }
 
     render() {
+        
+        const socket = socketIOClient(constants.SOCKET_HOST);
+
+        socket.on('is_exists', (check) => {
+            if(!this.state.check) {
+                if(check) {
+                    alert('Your account is in used by another person');
+                    this.setState({
+                        check : true
+                    })
+                } else {
+                    this.props.history.push('/room');
+                }
+            }
+            
+        });
+        
         var errEmail;
         var errPassword;
         var spinner;
@@ -127,7 +158,10 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
       doLogin : (form) => {
           dispatch(Actions.doLogin(form));
-      }
+      },
+      addUserOnline: (user) => {
+        dispatch(Actions.addUserOnlineToList(user));
+        }
     }
 };
 

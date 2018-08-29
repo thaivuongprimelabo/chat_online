@@ -8,11 +8,11 @@ var initialState = {
 var myReducer = (state = initialState, action) => {
 	switch(action.type) {
 		case types.UPDATE_AUTH_STATE:
-			if(action.userInfo !== null) {
-				localStorage.setItem('userInfo', JSON.stringify(action.userInfo));
-			} else {
-				localStorage.removeItem('userInfo');
-			}
+			// if(action.userInfo !== null) {
+			// 	localStorage.setItem('userInfo', JSON.stringify(action.userInfo));
+			// } else {
+			// 	localStorage.removeItem('userInfo');
+			// }
 			
 			state.userInfo = action.userInfo;
 

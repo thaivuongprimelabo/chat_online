@@ -45,6 +45,7 @@ export const doLogout = (userInfo) => {
 	return (dispatch) => {
 		socket.emit('leave', userInfo);
 		dispatch(updateAuthState(null));
+		// dispatch(addUserOnlineToList(null));
 		
 	}
 }

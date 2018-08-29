@@ -12,8 +12,6 @@ import * as constants from '../constants/Commons';
 
 import socketIOClient from 'socket.io-client';
 
-
-
 class Room extends Component {
 
     constructor(props) {
@@ -29,6 +27,9 @@ class Room extends Component {
     
     componentDidMount() {
         this._redirectToLogin(this.props);
+
+        const socket = socketIOClient(constants.SOCKET_HOST);
+        socket.emit('get-user-online-list', null);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -37,9 +38,10 @@ class Room extends Component {
 
     _redirectToLogin = (props) => {
         var { auth } = props;
-        console.log(auth.userInfo);
         if(auth.userInfo === null) {
             this.props.history.push('/');
+        } else {
+            
         }
     }
 
@@ -62,7 +64,33 @@ class Room extends Component {
         })
     }
 
+    _loadUserList = (users) => {
+        var { auth } = this.props;
+        var length = users.length;
+        if(length > 0 && auth.userInfo !== null) {
+            for(var i = 0; i < length; i++) {
+                var item = users[i];
+                if(item.id === auth.userInfo.id) {
+                    users.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        return users;
+    }
+
     render() {
+        const socket = socketIOClient(constants.SOCKET_HOST);
+
+        socket.on('add_message_to_list', (msg) => {
+            this.props.addMessage(msg);
+        });
+
+        socket.on('set-user-online-list', (data) => {
+            var users = this._loadUserList(data);
+            this.props.addUserOnline(users);
+        });
 
         var { messages, userOnline, showLoading } = this.props;
         var messagesList;
@@ -127,6 +155,9 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         addMessage: (message) => {
             dispatch(Actions.addMessage(message));
+        },
+        addUserOnline: (user) => {
+            dispatch(Actions.addUserOnlineToList(user));
         }
     }
 };
