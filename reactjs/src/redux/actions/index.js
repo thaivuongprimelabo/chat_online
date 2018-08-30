@@ -7,8 +7,7 @@ import socketIOClient from 'socket.io-client';
 const socket = socketIOClient(constants.SOCKET_HOST);
 
 export const doLogin = (form) => {
-	return (dispatch) => {
-
+	return async (dispatch) => {
 		var data = {
 			email : form.email,
 			password : form.password
@@ -16,7 +15,7 @@ export const doLogin = (form) => {
 
 		var strJson = JSON.stringify(data);
 
-		axios({
+		await axios({
 			method: 'POST',
 			url : constants.API_LOGIN,
 			headers: {
@@ -31,8 +30,10 @@ export const doLogin = (form) => {
 				var userInfo = responseJson.data;
 				socket.emit('join', userInfo);
 				dispatch(updateAuthState(userInfo));
+				dispatch(setMenuTopInfo(userInfo));
 			} else {
-				alert('Email or password not valid');
+				dispatch(updateAuthState(null));
+				dispatch(setMenuTopInfo(null));
 			}
 		})
 		.catch((error) =>{
@@ -47,6 +48,13 @@ export const doLogout = (userInfo) => {
 		dispatch(updateAuthState(null));
 		// dispatch(addUserOnlineToList(null));
 		
+	}
+}
+
+export const setMenuTopInfo = (userInfo) => {
+	return {
+		type : types.SET_MENU_TOP_INFO,
+		userInfo : userInfo
 	}
 }
 

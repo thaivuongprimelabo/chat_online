@@ -1,6 +1,7 @@
 import * as types from '../actions/actionTypes';
 
-var userInfo = localStorage.getItem('userInfo');
+// var userInfo = localStorage.getItem('userInfo');
+var userInfo = null;
 var initialState = {
 	userInfo : JSON.parse(userInfo)
 };

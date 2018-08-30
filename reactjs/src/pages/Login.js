@@ -17,6 +17,8 @@ import LoginCss from '../assets/css/login.css'
 
 import socketIOClient from 'socket.io-client';
 
+const socket = socketIOClient(constants.SOCKET_HOST);
+
 class Login extends Component {
 
     constructor(props) {
@@ -29,25 +31,34 @@ class Login extends Component {
                 isValid : true
             },
             loading: false,
-            check : false
+            roomId : localStorage.getItem('roomId')
         }
     }
 
     componentDidMount() {
+        socket.emit('get-user-online-list',{roomId : this.state.roomId});
     }
 
     componentWillReceiveProps(nextProps) {
-        // var { auth } = this.props;
-        // if(auth.userInfo !== null) {
-        //     socket.emit('join', auth.userInfo);
-        //     //nextProps.history.push('/room');
-        // }
+        var { auth, showLoading } = nextProps;
+
+        console.log(showLoading);
+
+        if(!showLoading) {
+            if(auth.userInfo !== null) {
+                nextProps.history.push('/room');
+            } else {
+                alert('Email or password invalid');
+                this.setState({loading: false});
+            }
+        }
+
+        this.setState({loading : showLoading});
     }
+    
 
     _doLogin = () => {
         
-        this.setState({loading: true, check: false});
-
         var rules = [
             {
                 field: 'email',
@@ -70,9 +81,8 @@ class Login extends Component {
         var validation = formValidator.validate(this.state);
 
         if(validation.isValid) {
-            this.props.doLogin(this.state);
-            //this._checkExists();
-            //socket.emit('check_exists', {email : this.state.email})
+            this.setState({loading:true});
+            this._checkExists();
         } else {
             this.setState({
                 validation
@@ -81,8 +91,12 @@ class Login extends Component {
     }
 
     _checkExists = () => {
-        const socket = socketIOClient(constants.SOCKET_HOST);
-        socket.emit('join', {email : this.state.email});
+        
+        socket.emit('check-exists', {
+            email : this.state.email, 
+            password: this.state.password, 
+            roomId : this.state.roomId
+        });
     }
 
     doRegister = () => {
@@ -90,21 +104,11 @@ class Login extends Component {
     }
 
     render() {
-        
-        const socket = socketIOClient(constants.SOCKET_HOST);
 
-        socket.on('is_exists', (check) => {
-            if(!this.state.check) {
-                if(check) {
-                    alert('Your account is in used by another person');
-                    this.setState({
-                        check : true
-                    })
-                } else {
-                    this.props.history.push('/room');
-                }
+        socket.on('set-user-online-list', (res) => {
+            if(res.code === constants.CODE_OK) {
+                console.log(res.data);
             }
-            
         });
         
         var errEmail;
@@ -150,7 +154,8 @@ class Login extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        auth : state.auth
+        auth : state.auth,
+        showLoading : state.showLoading
     };
 }
 
@@ -161,7 +166,10 @@ const mapDispatchToProps = (dispatch, props) => {
       },
       addUserOnline: (user) => {
         dispatch(Actions.addUserOnlineToList(user));
-        }
+      },
+      handleLoginLoading: (status) => {
+        dispatch(Actions.updateLoadingStatus(status))
+    }
     }
 };
 

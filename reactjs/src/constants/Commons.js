@@ -14,3 +14,6 @@ export const ADD_LIST_MESSAGE = 1;
 export const ADD_ONE_MESSAGE = 0;
 
 export const SOCKET_HOST = 'http://127.0.0.1:3001';
+
+export const CODE_OK = '0000';
+export const CODE_EXISTS = '0001';

@@ -18,7 +18,8 @@ class Room extends Component {
         super(props);
         this.state = {
             friend_id : 0,
-            content : ''
+            content : '',
+            roomId : localStorage.getItem('roomId')
         }
     }
 
@@ -29,7 +30,7 @@ class Room extends Component {
         this._redirectToLogin(this.props);
 
         const socket = socketIOClient(constants.SOCKET_HOST);
-        socket.emit('get-user-online-list', null);
+        socket.emit('get-user-online-list', {roomId : this.state.roomId});
     }
 
     componentWillReceiveProps(nextProps) {

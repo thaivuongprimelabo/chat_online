@@ -10,13 +10,45 @@ import * as constants from './constants/Commons';
 import socketIOClient from 'socket.io-client';
 
 const socket = socketIOClient(constants.SOCKET_HOST);
-
 class App extends Component {
 
+    constructor(props) {
+        super(props);
+
+        var roomId = localStorage.getItem('roomId');
+        if(roomId === null) {
+            roomId = this.makeRoomId();
+            localStorage.setItem('roomId', roomId);
+        }
+
+        this.state = {
+            roomId : roomId
+        }
+    }
+
+    makeRoomId() {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        
+        for (var i = 0; i < 5; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        
+        return text;
+    }
+
     componentDidMount() {
+        socket.emit('create', this.state.roomId);
     }
 
     render() {
+
+        socket.on('is-exists', (res) => {
+            if(res.code === constants.CODE_EXISTS) {
+                alert('Your account is in used by another person');
+            } else {
+                this.props.doLogin(res.data);
+            }
+        });
 
         return (
             
@@ -33,13 +65,18 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        auth : state.auth
+        showLoading : state.showLoading
     };
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        
+        doLogin : (form) => {
+            dispatch(Actions.doLogin(form));
+        },
+        handleLoginLoading: (status) => {
+            dispatch(Actions.updateLoadingStatus(status))
+        }
     }
 };
 
