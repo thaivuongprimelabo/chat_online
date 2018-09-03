@@ -28,4 +28,8 @@ class HomeController extends Controller
     public function vue() {
         return view('vue');
     }
+
+    public function uploadFile() {
+        return view('uploadfile');
+    }
 }

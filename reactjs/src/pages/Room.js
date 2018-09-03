@@ -11,6 +11,9 @@ import * as Actions from '../redux/actions/index';
 import * as constants from '../constants/Commons';
 
 import socketIOClient from 'socket.io-client';
+import MessageBox from '../components/MessageBox';
+
+const socket = socketIOClient(constants.SOCKET_HOST);
 
 class Room extends Component {
 
@@ -18,8 +21,25 @@ class Room extends Component {
         super(props);
         this.state = {
             friend_id : 0,
+            user_id : 0,
+            friend_name : '',
             content : '',
             roomId : localStorage.getItem('roomId')
+        }
+        
+        if(!socket.hasListeners('set_user_online_list')) {
+            socket.on('set_user_online_list', (res) => {
+                if(res.code === constants.CODE_OK) {
+                    //var users = this._loadUserList(res.data);
+                    this.props.getUserList(res.data, this.state.user_id);
+                    //console.log(users);
+                    //this.props.addUserOnline(users);
+                    //if(users.length > 0) {
+                    //    this.props.updateOnlineOffline(users);
+                    //}
+                    
+                }
+            });
         }
     }
 
@@ -29,21 +49,27 @@ class Room extends Component {
     componentDidMount() {
         this._redirectToLogin(this.props);
 
-        const socket = socketIOClient(constants.SOCKET_HOST);
-        socket.emit('get-user-online-list', {roomId : this.state.roomId});
+        socket.emit('get_user_online_list',{});
+        
+        
     }
 
     componentWillReceiveProps(nextProps) {
         this._redirectToLogin(nextProps);
+
+        // var { userOnline } = nextProps;
+        // if(userOnline.length > 0) {
+            
+        // }
     }
 
     _redirectToLogin = (props) => {
         var { auth } = props;
         if(auth.userInfo === null) {
             this.props.history.push('/');
-        } else {
-            
         }
+
+        this.setState({user_id: auth.userInfo.id});
     }
 
     _sendMessage = () => {
@@ -55,13 +81,13 @@ class Room extends Component {
             content : this.state.content
         }
 
-        const socket = socketIOClient(constants.SOCKET_HOST);
-        socket.emit('add-message', message);
+        socket.emit('add_message', message);
     }
 
-    _setFriendId = (friend_id) => {
+    _setFriendId = (friend_id, friend_name) => {
         this.setState({
-            friend_id : friend_id
+            friend_id : friend_id,
+            friend_name : friend_name
         })
     }
 
@@ -82,34 +108,17 @@ class Room extends Component {
     }
 
     render() {
-        const socket = socketIOClient(constants.SOCKET_HOST);
 
-        socket.on('add_message_to_list', (msg) => {
-            this.props.addMessage(msg);
-        });
-
-        socket.on('set-user-online-list', (data) => {
-            var users = this._loadUserList(data);
-            this.props.addUserOnline(users);
-        });
-
-        var { messages, userOnline, showLoading } = this.props;
-        var messagesList;
-        var spinner;
-        if(messages.length > 0) {
-            messagesList = messages.map((message, index) => {
-                return <MessageItem message={message} key={index} />
-            });
-        }
-
-        if(showLoading) {
-            spinner = <Loading />;
+        var { messages, userOnline, auth } = this.props;
+        var messageBox;
+        if(this.state.friend_id !== 0) {
+            messageBox = <MessageBox messages={messages} user_id={auth.userInfo.id} friend_id={this.state.friend_id} friend_name={this.state.friend_name} />;
         }
 
         var useronlineList;
         if(userOnline.length > 0) {
             useronlineList = userOnline.map((user, index) => {
-                return <UserOnlineItem user={user} key={index} setFriendId={ this._setFriendId } />
+                return <UserOnlineItem friend={user} user_id={auth.userInfo.id} key={index} setFriendId={ this._setFriendId } />
             });
         }
 
@@ -123,20 +132,8 @@ class Room extends Component {
                             { useronlineList }
                         </ul>
                     </div>
-                    <div className="card col-md-8">
-                        <span>Talk to Le Giang:</span>
-                        <div className="form-signin">
-                            <span id="reauth-email" className="reauth-email"></span>
-                            <div id="content" style={{ position: 'relative' }}>
-                                { spinner }
-                                <ul className="content-box">
-                                    { messagesList }
-                                </ul>
-                            </div>
-                            <textarea id="message" className="form-control" rows={'2'} style={{ marginBottom: '5px' }} value={ this.state.content } onChange={(event) => this.setState({ content: event.target.value })}></textarea>
-                            <button className="btn btn-lg btn-primary btn-block btn-signin" type="submit" onClick={ this._sendMessage }>Send</button>
-                        </div>
-                    </div>
+                    <div className="card col-md-8">{ messageBox }</div>
+                    
                 </div>
             </Main>
         )
@@ -159,6 +156,12 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         addUserOnline: (user) => {
             dispatch(Actions.addUserOnlineToList(user));
+        },
+        getUserList: (userOnlineList, userId) => {
+            dispatch(Actions.getUserList(userOnlineList, userId));
+        },
+        updateOnlineOffline: (userOnlineList) => {
+            dispatch(Actions.updateOnlineOffline(userOnlineList));
         }
     }
 };

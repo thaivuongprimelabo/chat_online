@@ -20,3 +20,4 @@ Route::get('/', function () {
 
 Route::get('/react', 'HomeController@react')->name('react');
 Route::get('/vue', 'HomeController@vue')->name('vue');
+Route::get('/upload_file', 'HomeController@uploadFile')->name('uploadFile');

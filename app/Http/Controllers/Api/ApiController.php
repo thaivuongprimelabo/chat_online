@@ -21,12 +21,14 @@ class ApiController extends Controller
         $this->middleware(function ($request, $next) {
             
             // Check content-type
-            $contentType = strtolower($_SERVER["CONTENT_TYPE"]);
-            if ($contentType != 'application/json; charset=utf-8') {
-                $result["code"] = ResultCode::CONTENT_TYPE_ERR;
-                $result["data"] = [];
-                return response()->json($result);
-            }
+            // if($request->isMethod('post')) {
+            //     $contentType = strtolower($_SERVER["CONTENT_TYPE"]);
+            //     if ($contentType != 'application/json; charset=utf-8') {
+            //         $result["code"] = ResultCode::CONTENT_TYPE_ERR;
+            //         $result["data"] = [];
+            //         return response()->json($result);
+            //     }
+            // }
             
             return $next($request);
         });
@@ -39,26 +41,30 @@ class ApiController extends Controller
     public function login(Request $request) {
         $result = [];
         
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:6',
-        ]);
-        
-        // Validator
-        if($validator->fails()) {
-            $result['code'] = ResultCode::VALIDATE_ERR;
-            $result['data'] = [];
-            return response()->json($result);
+        if($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|string|email|max:255',
+                'password' => 'required|string|min:6',
+            ]);
+            
+            // Validator
+            if($validator->fails()) {
+                $result['code'] = ResultCode::VALIDATE_ERR;
+                $result['data'] = [];
+                return response()->json($result);
+            }
+            
+            // Check login
+            if(Auth::attempt($request->all())) {
+                $result['code'] = ResultCode::SUCCESS;
+                $result['data'] = Auth::user();
+            } else {
+                $result['code'] = ResultCode::LOGIN_FAILED;
+                $result['data'] = [];
+            }
         }
         
-        // Check login
-        if(Auth::attempt($request->all())) {
-            $result['code'] = ResultCode::SUCCESS;
-            $result['data'] = Auth::user();
-        } else {
-            $result['code'] = ResultCode::LOGIN_FAILED;
-            $result['data'] = [];
-        }
         
         return response()->json($result);
     }
@@ -70,31 +76,34 @@ class ApiController extends Controller
         $result = [];
         
         $data = $request->all();
+
+        if($request->isMethod('post')) {
         
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-        
-        // Validator
-        if($validator->fails()) {
-            $result['code'] = ResultCode::VALIDATE_ERR;
-            $result['data'] = [];
-            return response()->json($result);
-        }
-        
-        // Create user
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-        
-        if($user) {
-            $result['code'] = ResultCode::SUCCESS;
-            $result['data'] = $user;
-            return response()->json($result);
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6',
+            ]);
+            
+            // Validator
+            if($validator->fails()) {
+                $result['code'] = ResultCode::VALIDATE_ERR;
+                $result['data'] = [];
+                return response()->json($result);
+            }
+            
+            // Create user
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
+            
+            if($user) {
+                $result['code'] = ResultCode::SUCCESS;
+                $result['data'] = $user;
+                return response()->json($result);
+            }
         }
         
         return response()->json();
@@ -123,7 +132,8 @@ class ApiController extends Controller
            'user_id' => $data['user_id'],
            'room_id' => $data['room_id'],
            'friend_id' => $data['friend_id'],
-           'content' => $data['content']
+           'content' => $data['content'],
+           'type_message' => 0
         ]);
 
         $message = Messages::select('messages.*','users.name')->where('messages.id',$message['id'])
@@ -186,6 +196,7 @@ class ApiController extends Controller
                             ->leftJoin('users','users.id','=','messages.user_id')
                             ->where($wheres)
                             ->orWhere($orWheres)
+                            ->orderBy('created_at')
                             ->get();
 
         if($messages) {
@@ -197,6 +208,103 @@ class ApiController extends Controller
         }
 
         return response()->json();
+    }
+
+    /**
+     * getUserList
+     */
+    public function getUserList(Request $request) {
+        $data = $request->all();
+        $user_id = $request->query('userId', 99);
+        $users = [];
+        if($user_id != 99) {
+            $users = User::where('id', '!=', $user_id)->get();
+        } else {
+            $users = User::all();
+        }
+        
+        if($users) {
+            $result['code'] = ResultCode::SUCCESS;
+            $result['data'] = $users;
+            return response()->json($result);
+        }
+
+        return response()->json();
+    }
+
+    /**
+     * uploadFile
+     */
+    public function sendFile(Request $request) {
+        $result = [
+            'code' => ResultCode::UPLOAD_FAILED,
+            'data' => []
+        ];
+
+        if($request->hasFile('file')) {
+            $file = $request->file;
+            $size = $file->getSize();
+            $ext = $file->getClientOriginalExtension();
+            $filename = 'f_' . time() . '.' . $ext;
+
+            $path = $file->move('upload', $filename);
+            
+            
+
+            // if($path != '') {
+            //     $result['code'] = ResultCode::SUCCESS;
+            //     $result['data'] = [
+            //         'filePath' => $path->getPathName(),
+            //         'fileSize' => $size
+            //     ];
+            // }
+
+            $content = $path->getPathName();
+
+            $data = $request->all();
+
+            $message = Messages::create([
+                'user_id' => $data['user_id'],
+                'room_id' => null,
+                'friend_id' => $data['friend_id'],
+                'content' => $content,
+                'type_message' => 1
+             ]);
+     
+             $message = Messages::select('messages.*','users.name')->where('messages.id',$message['id'])
+                                 ->leftJoin('users','users.id','=','messages.user_id')
+                                 ->first();
+             
+             if($message) {
+                 $result['code'] = ResultCode::SUCCESS;
+                 $result['data'] = $message;
+                 return response()->json($result);
+             }
+            
+            
+            // print_r($file);
+
+            // //Lấy Tên files
+            // echo 'Tên Files: ' . $file->getClientOriginalName();
+            // echo '<br/>';
+
+            // //Lấy Đuôi File
+            // echo 'Đuôi file: ' . $file->getClientOriginalExtension();
+            // echo '<br/>';
+
+            // //Lấy đường dẫn tạm thời của file
+            // echo 'Đường dẫn tạm: ' . $file->getRealPath();
+            // echo '<br/>';
+
+            // //Lấy kích cỡ của file đơn vị tính theo bytes
+            // echo 'Kích cỡ file: ' . $file->getSize();
+            // echo '<br/>';
+
+            // //Lấy kiểu file
+            // echo 'Kiểu files: ' . $file->getMimeType();
+
+        }
+        return response()->json($result);
     }
     
 }

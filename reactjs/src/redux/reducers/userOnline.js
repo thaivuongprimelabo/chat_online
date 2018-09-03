@@ -12,6 +12,23 @@ var myReducer = (state = initialState, action) => {
             // }s
             //localStorage.setItem('user_online_list', JSON.stringify(action.users));
             return [...state];
+        case types.GET_USER_LIST:
+            state = action.users;
+        case types.UPDATE_ONLINE_OFFLINE:
+
+            var length = action.userOnlineList.length;
+            var length2 = state.length;
+            for(var i = 0; i < length; i++) {
+                var userOnline = action.userOnlineList[i];
+                for(var j = 0; j < length2; j++) {
+                    var user = state[j];
+                    user.status = constants.OFFLINE;
+                    if(userOnline.id === user.id) {
+                        user.status = constants.ONLINE;
+                    }
+                }
+            }
+            return [...state];
 		default:
 			return state;
     }

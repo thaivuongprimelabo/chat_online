@@ -1115,6 +1115,7 @@ Author: Tran Vu Hao;
   padding:5px;
   border-radius: 4px;
   margin-bottom: 10px;
+  overflow: hidden;
 }
 .message-chat-box p {
   color: #333333;
@@ -1138,4 +1139,16 @@ Author: Tran Vu Hao;
 .fade-enter.fade-enter-active {
   opacity: 1;
   transition: opacity 250ms ease-in;
+}
+
+#group-file {
+  list-style: none;
+  margin:0;
+  padding:0;
+}
+
+#group-file li {
+  float:left;
+  margin-right: 6px;
+  margin-bottom: 6px;
 }

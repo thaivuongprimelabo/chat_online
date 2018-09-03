@@ -19,3 +19,5 @@ Route::post('/resetPassword', 'Api\ApiController@resetPassword')->name('resetPas
 Route::post('/add-message', 'Api\ApiController@addMessage')->name('addMessage');
 Route::post('/create-room', 'Api\ApiController@createRoom')->name('createRoom');
 Route::post('/get-message-list', 'Api\ApiController@getMessageList')->name('getMessageList');
+Route::get('/get-user-list', 'Api\ApiController@getUserList')->name('getUserList');
+Route::post('/send-file', 'Api\ApiController@sendFile')->name('getUsersendFileList');

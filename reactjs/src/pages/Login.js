@@ -13,6 +13,7 @@ import validator from 'validator';
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions/index';
 import * as constants from '../constants/Commons';
+import Utils from '../constants/Utils';
 import LoginCss from '../assets/css/login.css'
 
 import socketIOClient from 'socket.io-client';
@@ -24,6 +25,12 @@ class Login extends Component {
     constructor(props) {
         super(props);
 
+        var roomId = localStorage.getItem('roomId');
+        if(roomId === null) {
+            roomId = Utils.makeRoomId();
+            localStorage.setItem('roomId', roomId);
+        }
+
         this.state = {
             email : 'thai.vuong@primelabo.com.vn',
             password : '!23456Abc',
@@ -33,32 +40,39 @@ class Login extends Component {
             loading: false,
             roomId : localStorage.getItem('roomId')
         }
+
+        if(!socket.hasListeners('is_exists')) {
+            socket.on('is_exists', (res) => {
+                if(res.code === constants.CODE_EXISTS) {
+                    alert('Your account is in used by another person');
+                    this.setState({loading:false});
+                } else {
+                    this.props.doLogin(res.data);
+                }
+                socket.removeListener('is_exists')
+            });
+        }
     }
 
     componentDidMount() {
-        socket.emit('get-user-online-list',{roomId : this.state.roomId});
+        socket.emit('create',this.state.roomId);
     }
 
     componentWillReceiveProps(nextProps) {
-        var { auth, showLoading } = nextProps;
-
-        console.log(showLoading);
-
-        if(!showLoading) {
-            if(auth.userInfo !== null) {
-                nextProps.history.push('/room');
-            } else {
-                alert('Email or password invalid');
-                this.setState({loading: false});
-            }
+        var { auth } = nextProps;
+        if(auth.userInfo !== null) {
+            nextProps.history.push('/room');
+        } else {
+            alert('Email or password invalid');
+            this.setState({loading: false});
         }
-
-        this.setState({loading : showLoading});
     }
     
 
     _doLogin = () => {
         
+        this.setState({loading:true});
+
         var rules = [
             {
                 field: 'email',
@@ -81,8 +95,11 @@ class Login extends Component {
         var validation = formValidator.validate(this.state);
 
         if(validation.isValid) {
-            this.setState({loading:true});
-            this._checkExists();
+
+            setTimeout(() => {
+                this._checkExists();
+            }, 1000);
+            
         } else {
             this.setState({
                 validation
@@ -92,7 +109,7 @@ class Login extends Component {
 
     _checkExists = () => {
         
-        socket.emit('check-exists', {
+        socket.emit('check_exists', {
             email : this.state.email, 
             password: this.state.password, 
             roomId : this.state.roomId
@@ -105,12 +122,6 @@ class Login extends Component {
 
     render() {
 
-        socket.on('set-user-online-list', (res) => {
-            if(res.code === constants.CODE_OK) {
-                console.log(res.data);
-            }
-        });
-        
         var errEmail;
         var errPassword;
         var spinner;
@@ -166,10 +177,7 @@ const mapDispatchToProps = (dispatch, props) => {
       },
       addUserOnline: (user) => {
         dispatch(Actions.addUserOnlineToList(user));
-      },
-      handleLoginLoading: (status) => {
-        dispatch(Actions.updateLoadingStatus(status))
-    }
+      }
     }
 };
 

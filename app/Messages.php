@@ -15,6 +15,6 @@ class Messages extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id','room_id','friend_id','content'
+        'user_id','room_id','friend_id','content','type_message'
     ];
 }

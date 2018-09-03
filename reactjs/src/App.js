@@ -6,50 +6,30 @@ import Register from './pages/Register'
 import { connect } from 'react-redux';
 import * as Actions from './redux/actions/index';
 import * as constants from './constants/Commons';
+import Utils from './constants/Utils';
 
-import socketIOClient from 'socket.io-client';
-
-const socket = socketIOClient(constants.SOCKET_HOST);
 class App extends Component {
 
     constructor(props) {
         super(props);
 
-        var roomId = localStorage.getItem('roomId');
-        if(roomId === null) {
-            roomId = this.makeRoomId();
-            localStorage.setItem('roomId', roomId);
-        }
+        // var roomId = localStorage.getItem('roomId');
+        // if(roomId === null) {
+        //     roomId = Utils.makeRoomId();
+        //     localStorage.setItem('roomId', roomId);
+        // }
 
-        this.state = {
-            roomId : roomId
-        }
-    }
-
-    makeRoomId() {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        
-        for (var i = 0; i < 5; i++)
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        
-        return text;
+        // this.state = {
+        //     roomId : roomId
+        // }
     }
 
     componentDidMount() {
-        socket.emit('create', this.state.roomId);
+        // socket.emit('create', this.state.roomId);
     }
 
     render() {
-
-        socket.on('is-exists', (res) => {
-            if(res.code === constants.CODE_EXISTS) {
-                alert('Your account is in used by another person');
-            } else {
-                this.props.doLogin(res.data);
-            }
-        });
-
+        
         return (
             
             <Router>

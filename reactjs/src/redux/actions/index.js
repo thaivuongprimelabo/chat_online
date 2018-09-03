@@ -120,12 +120,78 @@ export const addMessage = (message) => {
 			var responseJson = res.data;
 			if(responseJson.code === 200) {
 				var message = responseJson.data;
-				dispatch(addMessageToList(message, constants.ADD_ONE_MESSAGE));
+				socket.emit('add_message', message);
 			}
 		})
 		.catch((error) =>{
 			alert(error);
 		});
+	}
+}
+
+export const getUserList = (userOnlineList, userId) => {
+	return async (dispatch) => {
+		console.log(userId);
+		await axios({
+			method: 'GET',
+			url : constants.API_GET_USER_LIST + '?userId=' + userId
+		})
+		.then(res => {
+			var responseJson = res.data;
+			if(responseJson.code === 200) {
+				var users = responseJson.data;
+				var length = userOnlineList.length;
+				var length2 = users.length;
+				for(var i = 0; i < length; i++) {
+					var userOnline = userOnlineList[i];
+					if(userId === userOnline.id) {
+						continue;
+					}
+
+					for(var j = 0; j < length2; j++) {
+						var user = users[j];
+						
+						// user['status'] = constants.OFFLINE;
+						if(userOnline.id === user.id) {
+							user['status'] = constants.ONLINE;
+						}
+					}
+				}
+				dispatch(addUserOnlineToList(users));
+			}
+		})
+		.catch((error) =>{
+			alert(error);
+		});
+	}
+}
+
+export const sendFile = (formData) => {
+	return async (dispatch) => {
+		await axios({
+			method: 'POST',
+			url : constants.API_SEND_FILE,
+			data : formData
+		})
+		.then(res => {
+			var responseJson = res.data;
+			if(responseJson.code === 200) {
+				var fileList = responseJson.data;
+				socket.emit('add_message', fileList);
+				// dispatch(addMessageToList(fileList));
+			}
+		})
+		.catch((error) =>{
+			alert(error);
+		});
+
+	}
+}
+
+export const updateOnlineOffline = (userOnlineList) => {
+	return {
+		type: types.UPDATE_ONLINE_OFFLINE,
+		userOnlineList : userOnlineList
 	}
 }
 
