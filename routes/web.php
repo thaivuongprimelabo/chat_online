@@ -20,4 +20,7 @@ Route::get('/', function () {
 
 Route::get('/react', 'HomeController@react')->name('react');
 Route::get('/vue', 'HomeController@vue')->name('vue');
-Route::get('/upload_file', 'HomeController@uploadFile')->name('uploadFile');
+Route::get('/product', 'HomeController@product')->name('product');
+Route::post('/payment', 'HomeController@payment')->name('paymentPost');
+Route::get('/payment', 'HomeController@payment')->name('paymentGet');
+Route::get('/payment-success', 'HomeController@paymentSuccess')->name('paymentSuccess');
